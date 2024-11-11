@@ -19,6 +19,7 @@
 const fs = require('fs');
 
 // Mocked tracking service with a simple console log (to avoid dependency issues)
+// Track services can be export from track service file
 const track = (event, data) => {
     console.log(`Tracking event: ${event}`, data);
 };
@@ -46,17 +47,27 @@ const saveTaskToDB = (task, callback) => {
 };
 
 const createTask = async (taskDetails, user, callback) => {
+    // logging - 'Starting to create task'
     const timezone = getUserTimezone(user); 
 
+    /**
+     * // Error handeling with try {
+     *... all functionality of feching
+     and trying to update resuorces
+    }
+     catch(err) { logging (err)}
+     */
     if (!taskDetails.timestamp) {
         taskDetails.timestamp = await fetchSchedule(taskDetails.description, timezone); 
     }
 
+    //Track service
     track('TASK_CREATED', {
         taskName: taskDetails.description,
         user: user.name
     });
 
+    // async await handeling by seprate this functionality to async bundle that hendeling db functionality
     fs.writeFile('tasks.txt', `Task: ${taskDetails.description} at ${taskDetails.timestamp}`, (err) => {
         if (err) {
             console.error('Failed to save task');
@@ -65,11 +76,18 @@ const createTask = async (taskDetails, user, callback) => {
         }
     });
 
+    // logging - End creating task now call for callback
     callback();
 };
-
 // Yoni  - 1. bad async  handle, loop inside a loop when we are working here with dictinary - i would ttry to think of a better Data Structure handeling
 const processUserRequests = (users) => {
+    /** 
+     * 1. i would be seperating this calls for steps
+     * 2. first seperte main functionality to seperate async function that taking  user feching async his data and update async the DB
+     * 3. all of this will be followed by looging steps - staring / end updating user tasks 
+     * 4. using try and catch for handeling errors in every async call 
+     * 5. every async call should be called with await key word
+     */
     users.forEach(user => {
         fetchUserData(user, (userData) => {
             getUserTasks(userData.id, (tasks) => {
@@ -87,6 +105,7 @@ const processUserRequests = (users) => {
     });
 };
 
+// can be in util file
 const calculateRecurrence = (delay) => {
     switch (delay) {
         case 86400000:
@@ -101,6 +120,7 @@ const calculateRecurrence = (delay) => {
 };
 
 // Hardcoded HTTP request (Mocked OpenAI response for testing purposes)
+// same here using try catch and async functionality with the reponse including in 
 const generateReminder = async (text, user) => {
     const prompt = `Remind me to ${text}`;
     
@@ -119,6 +139,7 @@ const generateReminder = async (text, user) => {
     }
 };
 
+// util file
 const getUserTimezone = (user) => {
     if (user.timezone) {
         return user.timezone;
@@ -126,6 +147,7 @@ const getUserTimezone = (user) => {
     return 'UTC';
 };
 
+// util file
 const getReminderMessage = (reminder) => {
     const date = reminder.date;
     const time = reminder.time;
@@ -149,6 +171,7 @@ const users = [
 
 // Yoni : this code call for create task which is async funct need to use await call
 const main = () => {
+    // call for await createTask
     users.forEach(user => {
         createTask({ description: 'Buy Milk' }, user, () => {
             console.log(`Task created for user ${user.name}`);
