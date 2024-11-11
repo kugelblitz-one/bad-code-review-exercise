@@ -1,6 +1,21 @@
 // bad_code_review_exercise.js
 // This code intentionally includes multiple bad coding practices for use in code review exercises.
 
+/**
+ * Yoni: Code Review - 
+ * in General - i run this code and see some major async issues, not handeling errors, not using tools for save approching sources(try - catch).
+ * 1. call for async func without await 
+ * 2. try to approach source without a synch handelling and without error handeling
+ * 3. there is no logs so we not will be able to trCK errors
+ * 4. convantion - const are not in right place in the top of the page and the 
+ * 5. handeling iterators over the users - there is better solution with working with lodash for objects and arrays.
+ * 6. handelling const like dates / time or even users utils can be seperate for utils files
+ * 7. tasks services can be handled in one place
+ * 8. some varibles can be used as const exp ONE_DAY_MS = 86400000
+
+ * 9. there is another "small" things like generic handeling the sources 
+ *  
+ */
 const fs = require('fs');
 
 // Mocked tracking service with a simple console log (to avoid dependency issues)
@@ -53,6 +68,7 @@ const createTask = async (taskDetails, user, callback) => {
     callback();
 };
 
+// Yoni  - 1. bad async  handle, loop inside a loop when we are working here with dictinary - i would ttry to think of a better Data Structure handeling
 const processUserRequests = (users) => {
     users.forEach(user => {
         fetchUserData(user, (userData) => {
@@ -130,6 +146,8 @@ const users = [
     { name: 'Jane', timezone: null } 
 ];
 
+
+// Yoni : this code call for create task which is async funct need to use await call
 const main = () => {
     users.forEach(user => {
         createTask({ description: 'Buy Milk' }, user, () => {
