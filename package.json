@@ -1,0 +1,12 @@
+{
+  "name": "bad-code-review-exercise",
+  "version": "1.0.0",
+  "description": "This repository contains a JavaScript codebase intentionally filled with bad coding practices and anti-patterns. It serves as a **code review exercise** for senior developers. Your task is to identify issues, suggest improvements, and potentially refactor the code to follow best practices. This exercise helps assess your ability to improve code quality, handle legacy issues, and demonstrate best practices.",
+  "main": "bad_code_review_exercise.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
